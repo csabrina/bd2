@@ -7,7 +7,8 @@ dotenv.load_dotenv()
 
 client = pymongo.MongoClient(os.getenv("URL_MONGODB"))
 db = client["sample_mflix"]
-def carregar_json(json_path):
+
+def load_json(json_path):
     with open(json_path, 'r') as file:
         data = json.load(file)
         db["season"].insert_many(data[0]["season"])
@@ -15,31 +16,30 @@ def carregar_json(json_path):
         db["player"].insert_many(data[0]["player"])
         print("Dados iniciais carregados com sucesso!")
 
-        
-def criar_registro(collection_name, registro):
+def create_record(collection_name, record):
     collection = db[collection_name]
-    resultado = collection.insert_one(registro)
-    print(f"Registro inserido na coleção '{collection_name}' com ID: {resultado.inserted_id}")
+    result = collection.insert_one(record)
+    print(f"Registro inserido na coleção '{collection_name}' com ID: {result.inserted_id}")
 
-def ler_registros(collection_name, filtro=None):
+def read_records(collection_name, filter=None):
     collection = db[collection_name]
-    registros = collection.find(filtro or {})
+    records = collection.find(filter or {})
     print(f"Registros na coleção '{collection_name}':")
-    for registro in registros:
-        print(registro)
+    for record in records:
+        print(record)
 
-def atualizar_registro(collection_name, filtro, novos_dados):
+def update_record(collection_name, filter, new_data):
     collection = db[collection_name]
-    resultado = collection.update_one(filtro, {"$set": novos_dados})
-    if resultado.matched_count > 0:
+    result = collection.update_one(filter, {"$set": new_data})
+    if result.matched_count > 0:
         print(f"Registro na coleção '{collection_name}' atualizado com sucesso!")
     else:
         print("Nenhum registro encontrado para atualizar.")
 
-def deletar_registro(collection_name, filtro):
+def delete_record(collection_name, filter):
     collection = db[collection_name]
-    resultado = collection.delete_one(filtro)
-    if resultado.deleted_count > 0:
+    result = collection.delete_one(filter)
+    if result.deleted_count > 0:
         print(f"Registro removido da coleção '{collection_name}' com sucesso!")
     else:
         print("Nenhum registro encontrado para deletar.")
@@ -54,8 +54,8 @@ if __name__ == "__main__":
         "state": "Paraíba",
         "year_founded": 2021
     }
-    carregar_json("results.json")
-    criar_registro("team", new_team)
-    ler_registros("team", {"city": "João Pessoa"}) 
-    atualizar_registro("team", {"id": 1989}, {"nickname": "Warrior"})
-    deletar_registro("team", {"id": 1989})
+    load_json("results.json")
+    create_record("team", new_team)
+    read_records("team", {"city": "João Pessoa"}) 
+    update_record("team", {"id": 1989}, {"nickname": "Warrior"})
+    delete_record("team", {"id": 1989})
