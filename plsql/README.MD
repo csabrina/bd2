@@ -1,4 +1,4 @@
-# Diferença entre `1_create_function_calculate_ranking.sql` e `create_function_calculate_ranking.sql`
+# Diferença entre as functions
 
 ## Arquivo: `1_create_function_calculate_ranking.sql`
 
